@@ -38,37 +38,36 @@ public class CatalogoServlet extends HttpServlet {
 	
 		try {
 			if(action!=null) {
-				if(action.equalsIgnoreCase("add")) {
-					bean.setNome(request.getParameter("nome"));
-					bean.setDescrizione(request.getParameter("descrizione"));
-					bean.setIva(request.getParameter("iva"));
-					bean.setPrezzo(Double.parseDouble(request.getParameter("prezzo")));
-					bean.setQuantità(Integer.parseInt(request.getParameter("quantità")));
-					bean.setPiattaforma(request.getParameter("piattaforma"));
-					bean.setGenere(request.getParameter("genere"));
-					bean.setImmagine(request.getParameter("img"));
-					bean.setDataUscita(request.getParameter("dataUscita"));
-					bean.setDescrizioneDettagliata(request.getParameter("descDett"));
-					bean.setInVendita(true);
-					prodDao.doSave(bean);
+				if (action.equalsIgnoreCase("add")) {
+				    bean.setNome(escapeHtml(request.getParameter("nome")));
+				    bean.setDescrizione(escapeHtml(request.getParameter("descrizione")));
+				    bean.setIva(escapeHtml(request.getParameter("iva")));
+				    bean.setPrezzo(Double.parseDouble(escapeHtml(request.getParameter("prezzo"))));
+				    bean.setQuantità(Integer.parseInt(escapeHtml(request.getParameter("quantità"))));
+				    bean.setPiattaforma(escapeHtml(request.getParameter("piattaforma")));
+				    bean.setGenere(escapeHtml(request.getParameter("genere")));
+				    bean.setImmagine(escapeHtml(request.getParameter("img")));
+				    bean.setDataUscita(escapeHtml(request.getParameter("dataUscita")));
+				    bean.setDescrizioneDettagliata(escapeHtml(request.getParameter("descDett")));
+				    bean.setInVendita(true);
+				    prodDao.doSave(bean);
+				    
+				} else if (action.equalsIgnoreCase("modifica")) {
+				    bean.setIdProdotto(Integer.parseInt(escapeHtml(request.getParameter("id"))));
+				    bean.setNome(escapeHtml(request.getParameter("nome")));
+				    bean.setDescrizione(escapeHtml(request.getParameter("descrizione")));
+				    bean.setIva(escapeHtml(request.getParameter("iva")));
+				    bean.setPrezzo(Double.parseDouble(escapeHtml(request.getParameter("prezzo"))));
+				    bean.setQuantità(Integer.parseInt(escapeHtml(request.getParameter("quantità"))));
+				    bean.setPiattaforma(escapeHtml(request.getParameter("piattaforma")));
+				    bean.setGenere(escapeHtml(request.getParameter("genere")));
+				    bean.setImmagine(escapeHtml(request.getParameter("img")));
+				    bean.setDataUscita(escapeHtml(request.getParameter("dataUscita")));
+				    bean.setDescrizioneDettagliata(escapeHtml(request.getParameter("descDett")));
+				    bean.setInVendita(true);
+				    prodDao.doUpdate(bean);
 				}
-				
-				else if(action.equalsIgnoreCase("modifica")) {
-					
-					bean.setIdProdotto(Integer.parseInt(request.getParameter("id")));
-					bean.setNome(request.getParameter("nome"));
-					bean.setDescrizione(request.getParameter("descrizione"));
-					bean.setIva(request.getParameter("iva"));
-					bean.setPrezzo(Double.parseDouble(request.getParameter("prezzo")));
-					bean.setQuantità(Integer.parseInt(request.getParameter("quantità")));
-					bean.setPiattaforma(request.getParameter("piattaforma"));
-					bean.setGenere(request.getParameter("genere"));
-					bean.setImmagine(request.getParameter("img"));
-					bean.setDataUscita(request.getParameter("dataUscita"));
-					bean.setDescrizioneDettagliata(request.getParameter("descDett"));
-					bean.setInVendita(true);
-					prodDao.doUpdate(bean);	
-				}
+
 
 				request.getSession().removeAttribute("categorie");
 
@@ -95,6 +94,40 @@ public class CatalogoServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		doGet(request, response);
+	}
+
+	
+	private String escapeHtml(String input) {
+	    if (input == null) {
+	        return null;
+	    }
+	    
+	    StringBuilder escaped = new StringBuilder();
+	    for (char c : input.toCharArray()) {
+	        switch (c) {
+	            case '<':
+	                escaped.append("&lt;");
+	                break;
+	            case '>':
+	                escaped.append("&gt;");
+	                break;
+	            case '&':
+	                escaped.append("&amp;");
+	                break;
+	            case '"':
+	                escaped.append("&quot;");
+	                break;
+	            case '\'':
+	                escaped.append("&#x27;");
+	                break;
+	            case '/':
+	                escaped.append("&#x2F;");
+	                break;
+	            default:
+	                escaped.append(c);
+	        }
+	    }
+	    return escaped.toString();
 	}
 
 }
